@@ -1,6 +1,6 @@
 % Boilerplate Sheet Music for Small Acoustic Pop Ensembles
 %
-% Copyright (c) 2023 Jenna Chen. Licensed under MIT
+% Copyright (c) 2024 Jenna Chen. Licensed under MIT
 %
 % You keep your own pieces generated with the boilerplate
 %  in any license you prefer.
@@ -21,10 +21,13 @@ guitalele-tuning = \stringTuning <a d' g' c'' e'' a''>
 baritone-ukulele-tuning = \stringTuning <d g b e'>
 
 % The parameters used by a piece.
+piece-title = "The Title"
+piece-composer = "The Composer"
 piece-parameter = {
     % Set the key signature.
     \key c \major
     % Set the time signature.
+    \numericTimeSignature
     \time 4/4
     % Set the tempo.
     \tempo 4 = 88
@@ -138,8 +141,8 @@ piece = {
 \book {
     % Set the title and the composer of a piece.
     \header {
-        title = "The Title"
-        composer = "The Composer"
+        title = \piece-title
+        composer = \piece-composer
         % Remove the default footer.
         tagline = ##f
     }
@@ -159,15 +162,38 @@ piece = {
         % Set the layout of a sheet music.
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Melody Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
+
+    \bookOutputSuffix "melody"
+
+    % Generate a MIDI file for the melody part.
+    \score {
+        \new Staff \with {
+            instrumentName = "Melody"
+            midiInstrument = "voice oohs"
+        } {
+            % Use treble clef.
+            \clef treble
+            % Recall the parameters of the piece.
+            \piece-parameter
+            % Recall the melody we wrote.
+            \melody
+        }
+
+        \midi {}
+    }
 
     % Create the melody part.
     \score {
-        \header {
-            piece = "The Title (Melody Part)"
-        }
-
         <<
         % Create the chord name part.
         \new ChordNames {
@@ -193,15 +219,37 @@ piece = {
 
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Harmony Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
 
-    % Create the harmony part.
-    \score {    
-        \header {
-            piece = "The Title (Harmony Part)"
+    \bookOutputSuffix "harmony"
+
+    % Generate a MIDI file for the harmony part.
+    \score {
+        \new Staff \with {
+            instrumentName = "Harmony"
+            midiInstrument = "acoustic guitar (steel)"
+        } {
+            % Use treble clef.
+            % Record the notes higher in an octave.
+            \clef "treble_8"
+            % Recall the harmony we wrote.
+            \harmony
         }
 
+        \midi {}
+    }
+
+    % Create the harmony part.
+    \score {
         <<
         % Create the chord name part.
         \new ChordNames {
@@ -224,15 +272,41 @@ piece = {
 
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Beat Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
+
+    \bookOutputSuffix "beat"
+
+    % Generate a MIDI file for the beat part.
+    \score {
+        \new DrumStaff \with {
+            instrumentName = "Beat"
+            \override MidiInstrument #'midiInstrument = #"drum kit"
+
+            % Assume a cajon here.
+            % Record the sheet music as if a drum kit.
+            %
+            % Change the style table if you
+            %  use other percussion instrument.
+            drumStyleTable = #drums-style
+        } \drummode {
+            % Recall the beats we wrote.
+            \beat
+        }
+
+        \midi {}
+    }
 
     % Create the beat part.
     \score {
-        \header {
-            piece = "The Title (Beat Part)"
-        }
-
         <<
         \new DrumStaff \with {
             % Use a cajon as if it is a drum kit.
