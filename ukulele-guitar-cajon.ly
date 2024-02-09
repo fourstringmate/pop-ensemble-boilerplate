@@ -12,14 +12,6 @@
 % Adjust the size of a sheet music.
 #(set-global-staff-size 20)
 
-% Set the tuning of guitaleles,
-%  which is not prebuilt in LilyPond.
-guitalele-tuning = \stringTuning <a d' g' c'' e'' a''>
-
-% Set the tuning of baritone ukuleles,
-%  which is not prebuilt in LilyPond.
-baritone-ukulele-tuning = \stringTuning <d g b e'>
-
 % The parameters used by a piece.
 piece-title = "The Title"
 piece-composer = "The Composer"
@@ -32,6 +24,9 @@ piece-parameter = {
     % Set the tempo.
     \tempo 4 = 88
 }
+melody-instrument = "voice oohs"
+harmony-instrument = "acoustic guitar (steel)"
+beat-instrument = #"drum kit"
 
 % Record the chords of a piece.
 % \chords is a builtin command in LilyPond.
@@ -93,7 +88,7 @@ piece = {
         % Create the melody part.
         \new Staff \with {
             instrumentName = "Melody"
-            midiInstrument = "voice oohs"
+            midiInstrument = \melody-instrument
         } {
             % Use treble clef.
             \clef treble
@@ -110,7 +105,7 @@ piece = {
         % Create the chordal part.
         \new Staff \with {
             instrumentName = "Harmony"
-            midiInstrument = "acoustic guitar (steel)"
+            midiInstrument = \harmony-instrument
         } {
             % Use treble clef.
             % Record the notes higher in an octave.
@@ -122,7 +117,7 @@ piece = {
         % Create the beat part.
         \new DrumStaff \with {
             instrumentName = "Beat"
-            \override MidiInstrument #'midiInstrument = #"drum kit"
+            \override MidiInstrument #'midiInstrument = \beat-instrument
 
             % Assume a cajon here.
             % Record the sheet music as if a drum kit.
@@ -179,7 +174,7 @@ piece = {
     \score {
         \new Staff \with {
             instrumentName = "Melody"
-            midiInstrument = "voice oohs"
+            midiInstrument = \melody-instrument
         } {
             % Use treble clef.
             \clef treble
@@ -236,7 +231,7 @@ piece = {
     \score {
         \new Staff \with {
             instrumentName = "Harmony"
-            midiInstrument = "acoustic guitar (steel)"
+            midiInstrument = \harmony-instrument
         } {
             % Use treble clef.
             % Record the notes higher in an octave.
@@ -289,7 +284,7 @@ piece = {
     \score {
         \new DrumStaff \with {
             instrumentName = "Beat"
-            \override MidiInstrument #'midiInstrument = #"drum kit"
+            \override MidiInstrument #'midiInstrument = \beat-instrument
 
             % Assume a cajon here.
             % Record the sheet music as if a drum kit.
