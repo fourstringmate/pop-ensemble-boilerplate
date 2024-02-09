@@ -14,21 +14,28 @@
 
 % Set the tuning of guitaleles,
 %  which is not prebuilt in LilyPond.
-guitalele-tuning = \stringTuning <a d' g' c'' e'' a''>
+melody-tuning = \stringTuning <a d' g' c'' e'' a''>
 
 % Set the tuning of baritone ukuleles,
 %  which is not prebuilt in LilyPond.
-baritone-ukulele-tuning = \stringTuning <d g b e'>
+harmony-tuning = \stringTuning <d g b e'>
 
 % The parameters used by a piece.
+piece-title = "The Title"
+piece-composer = "The Composer"
 piece-parameter = {
     % Set the key signature.
     \key c \major
     % Set the time signature.
+    \numericTimeSignature
     \time 4/4
     % Set the tempo.
     \tempo 4 = 88
 }
+melody-instrument = "voice oohs"
+harmony-instrument = "acoustic guitar (nylon)"
+bassline-instrument = "acoustic bass"
+beat-instrument = #"drum kit"
 
 % Record the chords of a piece.
 % \chords is a builtin command in LilyPond.
@@ -90,7 +97,7 @@ piece = {
         % Create the melody part.
         \new Staff \with {
             instrumentName = "Melody"
-            midiInstrument = "voice oohs"
+            midiInstrument = \melody-instrument
         } {
             % Use treble clef.
             \clef treble
@@ -107,7 +114,7 @@ piece = {
         % Create the chordal part.
         \new Staff \with {
             instrumentName = "Harmony"
-            midiInstrument = "acoustic guitar (nylon)"
+            midiInstrument = \harmony-instrument
         } {
             % Use treble clef.
             % Record the notes higher in an octave.
@@ -119,7 +126,7 @@ piece = {
         % Create the bass part.
         \new Staff \with {
             instrumentName = "Bassline"
-            midiInstrument = "acoustic bass"
+            midiInstrument = \bassline-instrument
         } {
             % Use bass clef.
             \clef bass
@@ -130,7 +137,7 @@ piece = {
         % Create the beat part.
         \new DrumStaff \with {
             instrumentName = "Beat"
-            \override MidiInstrument #'midiInstrument = #"drum kit"
+            \override MidiInstrument #'midiInstrument = \beat-instrument
 
             % Assume a cajon here.
             % Record the sheet music as if a drum kit.
@@ -149,8 +156,8 @@ piece = {
 \book {
     % Set the title and the composer of a piece.
     \header {
-        title = "The Title"
-        composer = "The Composer"
+        title = \piece-title
+        composer = \piece-composer
         % Remove the default footer.
         tagline = ##f
     }
@@ -170,15 +177,38 @@ piece = {
         % Set the layout of a sheet music.
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Melody Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
+
+    \bookOutputSuffix "melody"
+
+    % Generate a MIDI file for the melody part.
+    \score {
+        \new Staff \with {
+            instrumentName = "Melody"
+            midiInstrument = \melody-instrument
+        } {
+            % Use treble clef.
+            \clef treble
+            % Recall the parameters of the piece.
+            \piece-parameter
+            % Recall the melody we wrote.
+            \melody
+        }
+
+        \midi {}
+    }
 
     % Create the melody part.
     \score {
-        \header {
-            piece = "The Title (Melody Part)"
-        }
-
         <<
         % Create the chord name part.
         \new ChordNames {
@@ -195,8 +225,8 @@ piece = {
             \lyric
         }
         \new TabStaff \with {
-            % Set the tuning as a guitalele.
-            stringTunings = #guitalele-tuning
+            % Set the tuning for the melody section.
+            stringTunings = #melody-tuning
         } {
             \melody
         }
@@ -204,15 +234,37 @@ piece = {
 
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Harmony Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
 
-    % Create the harmony part.
-    \score {    
-        \header {
-            piece = "The Title (Harmony Part)"
+    \bookOutputSuffix "harmony"
+
+    % Generate a MIDI file for the harmony part.
+    \score {
+        \new Staff \with {
+            instrumentName = "Harmony"
+            midiInstrument = \harmony-instrument
+        } {
+            % Use treble clef.
+            % Record the notes higher in an octave.
+            \clef "treble_8"
+            % Recall the harmony we wrote.
+            \harmony
         }
 
+        \midi {}
+    }
+
+    % Create the harmony part.
+    \score {
         <<
         % Create the chord name part.
         \new ChordNames {
@@ -226,8 +278,8 @@ piece = {
             \harmony
         }
         \new TabStaff \with {
-            % Set the tuning as a baritone ukulele.
-            stringTunings = #baritone-ukulele-tuning
+            % Set the tuning for a harmony section.
+            stringTunings = #harmony-tuning
         } {
             \harmony
         }
@@ -235,15 +287,36 @@ piece = {
 
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Bassline Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
+
+    \bookOutputSuffix "bassline"
+
+    % Generate a MIDI file for the bassline part.
+    \score {
+        \new Staff \with {
+            instrumentName = "Bassline"
+            midiInstrument = \bassline-instrument
+        } {
+            % Use bass clef.
+            \clef bass
+            % Recall the bassline we wrote.
+            \bassline
+        }
+
+        \midi {}
+    }
 
     % Create the bassline part
     \score {
-        \header {
-            piece = "The Title (Bassline Part)"
-        }
-
         <<
         % Create the chord name part.
         \new ChordNames {
@@ -266,15 +339,41 @@ piece = {
 
         \layout {}
     }
+}
 
-    \pageBreak
+\book {
+    % Set the title and the composer of a piece.
+    \header {
+        title = \markup { \concat { \piece-title " (Beat Part)" }}
+        composer = \piece-composer
+        % Remove the default footer.
+        tagline = ##f
+    }
+
+    \bookOutputSuffix "beat"
+
+    % Generate a MIDI file for the beat part.
+    \score {
+        \new DrumStaff \with {
+            instrumentName = "Beat"
+            \override MidiInstrument #'midiInstrument = \beat-instrument
+
+            % Assume a cajon here.
+            % Record the sheet music as if a drum kit.
+            %
+            % Change the style table if you
+            %  use other percussion instrument.
+            drumStyleTable = #drums-style
+        } \drummode {
+            % Recall the beats we wrote.
+            \beat
+        }
+
+        \midi {}
+    }
 
     % Create the beat part.
     \score {
-        \header {
-            piece = "The Title (Beat Part)"
-        }
-
         <<
         \new DrumStaff \with {
             % Use a cajon as if it is a drum kit.
