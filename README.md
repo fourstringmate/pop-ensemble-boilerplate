@@ -30,7 +30,7 @@ If your ensemble setting varies from either, modify the boilerplate by yourself.
 Clone the repo locally and rename it:
 
 ```shell
-$ git clone https://github.com/bardjourney/pop-ensemble-boilerplate.git my-music
+$ git clone https://github.com/fourstringmate/pop-ensemble-boilerplate.git my-music
 ```
 
 Alternatively, download the ZIP file or create a new repo out of this template repo.
